@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd" xml:lang="en">
+    <head>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>xTie</title>
+		
+		<style>
+			span#sub {
+				text-decoration: underline;
+			}
+			span#err {
+				color: red;
+			}
+		
+		</style>
+	</head>
+	<body>
+		<h1>Subdomain Redirects</h1>
+		<hr/>
+		<form action="update">
+			<span id="sub">http://<input type="text" name="sub" onchange="validate('sub')" />.xtie.net</span>
+			<br/>
+			Redirects to: <input type="text" name="dest" onchange="validate('dest')" />
+			<br/>
+			Key to prevent changes: <input type="password" id="key" name="key" />
+
+			<button type="submit">Submit</button>
+			<span id='err'></span>
+		</form>
+		
+		<script defer>
+			// optional input validation
+			function validate(field){
+				const e = document.getElementById(field);
+				if (field === 'dest') {				
+					const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+					// /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+					
+					const 
+				}
+			}		
+		</script>
+	</body>
+</html>
