@@ -1,15 +1,17 @@
-require("dotenv").config();
+// Imports
 const mysql = require("mysql");
 const debug = require("debug")("core:db");
-const globals = require("./globals");
 
-const rw_cred = globals.db;
-const rr_cred = globals.ro_db;
-const sameCredentials = JSON.stringify(rw_cred) === JSON.stringify(rr_cred);
+// Get config
+require("dotenv").config();
+const rw_cred = JSON.parse(process.env.RW_DB);
+const rr_cred = JSON.parse(process.env.RO_DB);
+const sameCredentials = process.env.RO_DB === process.env.RW_DB;
+
 let pool_rw, pool_rr;
 
 /**
- * 
+ *
  */
 module.exports.begin = () => {
     /* istanbul ignore next */
@@ -73,7 +75,7 @@ module.exports.queryProm = async (query, params, ro) => {
 /**
  * Disconnect from database
  */
-module.exports.close = () => 
+module.exports.close = () =>
     new Promise(resolve =>
         pool_rw.end(() =>
             pool_rr.end(() => {
