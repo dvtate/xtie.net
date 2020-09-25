@@ -39,6 +39,8 @@ router.post("/update", async (req, res) => {
     if (!protection)
         return res.status(400).send("body missing protection field");
     const prot = sha256(subdomain, protection);
+    const dest = destination.startsWith('http') && destination.includes('://')
+    ? destination : 'https://' + destination;
 
     // Check for pre-existing rule
     const rule = cache[subdomain];
@@ -59,19 +61,19 @@ router.post("/update", async (req, res) => {
         }
 
         // Update rule
-        await db.queryProm("UPDATE Rules SET destination=? WHERE subdomain=?", [destination, subdomain], false);
+        await db.queryProm("UPDATE Rules SET destination=? WHERE subdomain=?", [dest, subdomain], false);
         res.status(200).send("success");
-        cache[subdomain].destination = destination;
+        cache[subdomain].destination = dest;
         return;
     }
 
     // Create new rule
     await db.queryProm(
         "INSERT INTO Rules (subdomain, destination, protection) VALUES (?, ?, ?);",
-        [ subdomain, destination, prot ],
+        [ subdomain, dest, prot ],
         false,
     );
-    cache[subdomain] = { destination, protection: prot };
+    cache[subdomain] = { destination: dest, protection: prot };
 
     res.status(200).send("success");
 });

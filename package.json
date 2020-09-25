@@ -4,7 +4,9 @@
   "description": "subdomain redirect tool",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "DEBUG=xtie:* node src/index.js",
+    "forever": "DEBUG=xtie:* forever src/index.js",
+    "test": "jest"
   },
   "author": "dvtate",
   "license": "GPL-3.0-or-later",
@@ -17,7 +19,10 @@
   "directories": {
     "doc": "docs"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "forever": "^3.0.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dvtate/xtie.git"

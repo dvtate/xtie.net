@@ -11,8 +11,6 @@ module.exports = async (req, res, next) => {
     if (found === undefined)
         return next();
 
-    console.log(req.path);
-
     // Check redirects
     const r = cache[subdomain];
     if (!r)
@@ -21,5 +19,4 @@ module.exports = async (req, res, next) => {
 
     // Redirect them
     res.redirect(r.destination + req.path);
-
 };

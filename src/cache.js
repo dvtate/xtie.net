@@ -4,10 +4,6 @@ db.begin();
 
 //
 const cache = {
-    dvtt: {
-        destination: "https://dvtate.com",
-        protection: "43tnjfwne4jt35gnjkkjt35twe",
-    },
 };
 
 
