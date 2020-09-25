@@ -1,6 +1,5 @@
 # Deployment guide
 
-
 ## Configure Server
 ### MySQL
 1. Install your preferred MySQl variant, I generally use MariaDB.
@@ -23,3 +22,4 @@ CREATE TABLE Rules (
 3. start app with `npm start`
 
 ## Configure DNS
+You need to make a wildcard dns rule that points to your server

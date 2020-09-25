@@ -1,10 +1,8 @@
-
-const debug = require("debug")
+const debug = require("debug")('xtie:subdomain');
 const { cache } = require('./cache');
 
+// Middleware to handle subdomain redirects
 const pivot = '.' + process.env.HOSTNAME;
-
-//
 module.exports = async (req, res, next) => {
     // Get url
     const [subdomain, found] = req.hostname.split(pivot);
@@ -16,7 +14,8 @@ module.exports = async (req, res, next) => {
     if (!r)
         return res.redirect(404, process.env.HOSTNAME);
 
-
     // Redirect them
-    res.redirect(r.destination + req.path);
+    const dest = r.destination + req.path;
+    res.redirect(dest);
+    debug(`Redirect ${subdomain}: ${dest}`);
 };

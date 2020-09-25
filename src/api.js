@@ -27,9 +27,6 @@ function sha256(...strings) {
  * }
  */
 router.post("/update", async (req, res) => {
-
-    console.log(req.body);
-
     // Validate body
     const { subdomain, destination, protection } = req.body;
     if (!subdomain)
@@ -51,19 +48,26 @@ router.post("/update", async (req, res) => {
         if (prot !== rule.protection) {
             const hostname = process.env.HOSTNAME || 'xtie.net' || req.headers.host;
             res.status(401).send(`Incorrect protection key. Unauthorized to change ${subdomain}.${hostname}.`);
+            debug('Wrong protection key (length: %d)', protection.length);
             return;
         }
 
         if (destination === '') {
             await db.queryProm("DELETE FROM Rules WHERE subdomain=?", [subdomain], false);
+            const { destination } = cache[subdomain];
             delete cache[subdomain];
+            debug(`Remove rule ${subdomain}: was ${destination}`);
             return;
         }
 
         // Update rule
         await db.queryProm("UPDATE Rules SET destination=? WHERE subdomain=?", [dest, subdomain], false);
         res.status(200).send("success");
+
+        // Update cache
+        const old = cache[subdomain].destination
         cache[subdomain].destination = dest;
+        debug(`Update rule ${subdomain}: ${old} => ${dest}`);
         return;
     }
 
@@ -74,7 +78,7 @@ router.post("/update", async (req, res) => {
         false,
     );
     cache[subdomain] = { destination: dest, protection: prot };
-
+    debug(`Add rule ${subdomain}: ${dest}`);
     res.status(200).send("success");
 });
 

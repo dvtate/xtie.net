@@ -1,4 +1,4 @@
-// Load config
+// Load configs
 require("dotenv").config();
 require("./db").begin();
 
@@ -6,11 +6,15 @@ require("./db").begin();
 const express = require("express");
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+app.set('trust proxy', 1);
 
-// Subdomain routing
+// Subdomain routing middleware
 app.use(require('./subdomains'));
 
+// API routes
 app.use("/api", require('./api'));
+
+// Static pages
 app.use("/", express.static("./static", { fallthrough: true }));
 
 // Start server
