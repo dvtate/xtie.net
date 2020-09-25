@@ -4,7 +4,6 @@ const db = require("./db");
 const { cache } = require("./cache");
 const router = require("express").Router();
 
-
 /**
  * Hash string with SHA256
  * @param {string} subdomain - sting a
@@ -18,7 +17,6 @@ function sha256(...strings) {
         .update(`${SALT}${strings.join('')}`)
         .digest('hex');
 }
-
 
 /**
  * POST /api/update
@@ -77,6 +75,5 @@ router.post("/update", async (req, res) => {
 
     res.status(200).send("success");
 });
-
 
 module.exports = router;
