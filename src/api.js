@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const debug = require("debug")("xtie:api");
 const db = require("./db");
-const cahce = require("./cache");
+const { cache } = require("./cache");
 const router = require("express").Router();
 
 
@@ -29,22 +29,26 @@ function sha256(...strings) {
  * }
  */
 router.post("/update", async (req, res) => {
+
+    console.log(req.body);
+
     // Validate body
     const { subdomain, destination, protection } = req.body;
     if (!subdomain)
-        return res.send(400).status("body missing subdomain field");
+        return res.status(400).send("body missing subdomain field");
     if (!destination)
-        return res.send(400).status("body missing destination field");
+        return res.status(400).send("body missing destination field");
     if (!protection)
-        return res.send(400).status("body missing protection field");
+        return res.status(400).send("body missing protection field");
+    const prot = sha256(subdomain, protection);
 
-    // Check for preexisting rule
-    const [ rule ] = await db.queryProm("SELECT * FROM Rules WHERE subdomain=?;", [subdomain], true);
+    // Check for pre-existing rule
+    const rule = cache[subdomain];
 
     // Rule already exists
     if (rule) {
         // Invalid credentials
-        if (sha256(subdomain, protection) !== sha256(rule.subdomain, rule.protection)) {
+        if (prot !== rule.protection) {
             const hostname = process.env.HOSTNAME || 'xtie.net' || req.headers.host;
             res.status(401).send(`Incorrect protection key. Unauthorized to change ${subdomain}.${hostname}.`);
             return;
@@ -52,22 +56,24 @@ router.post("/update", async (req, res) => {
 
         if (destination === '') {
             await db.queryProm("DELETE FROM Rules WHERE subdomain=?", [subdomain], false);
+            delete cache[subdomain];
             return;
         }
 
         // Update rule
         await db.queryProm("UPDATE Rules SET destination=? WHERE subdomain=?", [destination, subdomain], false);
         res.status(200).send("success");
+        cache[subdomain].destination = destination;
         return;
     }
 
     // Create new rule
     await db.queryProm(
         "INSERT INTO Rules (subdomain, destination, protection) VALUES (?, ?, ?);",
-        [ subdomain, destination, sha256(protection) ],
+        [ subdomain, destination, prot ],
         false,
     );
-
+    cache[subdomain] = { destination, protection: prot };
 
     res.status(200).send("success");
 });

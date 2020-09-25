@@ -20,12 +20,12 @@
 	<body>
 		<h1>Subdomain Redirects</h1>
 		<hr/>
-		<form action="update">
-			<span id="sub">http://<input type="text" name="sub" onchange="validate('sub')" />.xtie.net</span>
+		<form action="/api/update" method='POST'>
+			<span id="sub">http://<input type="text" name="subdomain" onchange="validate('sub')" />.xtie.net</span>
 			<br/>
-			Redirects to: <input type="text" name="dest" onchange="validate('dest')" />
+			Redirects to: <input type="text" name="destination" onchange="validate('dest')" />
 			<br/>
-			Key to prevent changes: <input type="password" id="key" name="key" />
+			Key to prevent changes: <input type="password" name="protection" />
 
 			<button type="submit">Submit</button>
 			<span id='err'></span>

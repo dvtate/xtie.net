@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 // Subdomain routing
 app.use(require('./subdomains'));
 
-// app.use("/api", require('./api'));
+app.use("/api", require('./api'));
 app.use("/", express.static("./static", { fallthrough: true }));
 
 // Start server
