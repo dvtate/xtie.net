@@ -1,22 +1,25 @@
-//
+
 const debug = require("debug")
-const db = require("./db");
+const { cache } = require('./cache');
 
-
-//
-const subdomains_cache = {
-    dvtt: "dvtate.com",
-};
-db.begin().then(() => {
-
-});
-setTimeout(async () => {
-    await db.begin();
-}, 100);
-setInterval()
+const pivot = '.' + process.env.HOSTNAME;
 
 //
 module.exports = async (req, res, next) => {
-    console.log(req, res);
-    next();
+    // Get url
+    const [subdomain, found] = req.hostname.split(pivot);
+    if (found === undefined)
+        return next();
+
+    console.log(req.path);
+
+    // Check redirects
+    const r = cache[subdomain];
+    if (!r)
+        return res.redirect(404, process.env.HOSTNAME);
+
+
+    // Redirect them
+    res.redirect(r.destination + req.path);
+
 };

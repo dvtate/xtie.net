@@ -1,7 +1,9 @@
 const crypto = require("crypto");
 const debug = require("debug")("xtie:api");
 const db = require("./db");
-const router = require("express").router;
+const cahce = require("./cache");
+const router = require("express").Router();
+
 
 /**
  * Hash string with SHA256
@@ -22,7 +24,7 @@ function sha256(...strings) {
  * POST /api/update
  * @body {
  *  subdomain: origin subdomain
- *  destination: where to redirect user to
+ *  destination: where to redirect user to (or empty string to delete)
  *  protection: optional password to prevent changes
  * }
  */
@@ -48,8 +50,15 @@ router.post("/update", async (req, res) => {
             return;
         }
 
+        if (destination === '') {
+            await db.queryProm("DELETE FROM Rules WHERE subdomain=?", [subdomain], false);
+            return;
+        }
+
         // Update rule
         await db.queryProm("UPDATE Rules SET destination=? WHERE subdomain=?", [destination, subdomain], false);
+        res.status(200).send("success");
+        return;
     }
 
     // Create new rule
