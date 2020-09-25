@@ -35,9 +35,13 @@ router.post("/update", async (req, res) => {
         return res.status(400).send("body missing destination field");
     if (!protection)
         return res.status(400).send("body missing protection field");
+
+    // Process body
     const prot = sha256(subdomain, protection);
-    const dest = destination.startsWith('http') && destination.includes('://')
-    ? destination : 'https://' + destination;
+    let dest = destination.startsWith('http') && destination.includes('://')
+        ? destination : 'https://' + destination;
+    if (dest.endsWith('/'))
+	dest = dest.slice(0, -1);
 
     // Check for pre-existing rule
     const rule = cache[subdomain];

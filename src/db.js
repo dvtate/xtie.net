@@ -1,6 +1,6 @@
 // Imports
 const mysql = require("mysql");
-const debug = require("debug")("core:db");
+const debug = require("debug")("xtie:db");
 
 // Get config
 require("dotenv").config();

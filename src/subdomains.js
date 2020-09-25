@@ -1,11 +1,33 @@
 const debug = require("debug")('xtie:subdomain');
 const { cache } = require('./cache');
+const dns = require("dns");
+
+// Look up cname dns record
+async function getCname(hostname) {
+    return new Promise((resolve, reject) => {
+        dns.resolveCname(hostname, (err, record) => {
+            if (err) reject(err);
+            else resolve(record[0]);
+        });
+    });
+}
 
 // Middleware to handle subdomain redirects
 const pivot = '.' + process.env.HOSTNAME;
 module.exports = async (req, res, next) => {
+
+    // Handle CNAME
+    let { hostname } = req;
+    if (!hostname.includes(process.env.HOSTNAME)) {
+        try {
+            hostname = await getCname(hostname);
+        } catch (e) {
+            next();
+        }
+    }
+
     // Verify it's actually a subdomain
-    const [subdomain, found] = req.hostname.split(pivot);
+    const [subdomain, found] = hostname.split(pivot);
     if (found === undefined)
         return next();
 
@@ -22,3 +44,4 @@ module.exports = async (req, res, next) => {
     res.redirect(dest);
     debug(`Redirect ${subdomain}: ${dest}`);
 };
+
