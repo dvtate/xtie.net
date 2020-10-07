@@ -12,7 +12,7 @@ db.begin();
 const cache = {
     // Example rule (note user can't change it here)
     www: {
-        destination: `https://${process.env.HOSTNAME}`,
+        destination: `http://${process.env.HOSTNAME}`,
         protection: "43tnjfwne4jt35gnjkkjt35twe",
     },
 };

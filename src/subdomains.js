@@ -5,9 +5,9 @@ const dns = require("dns");
 // Look up cname dns record
 async function getCname(hostname) {
     return new Promise((resolve, reject) => {
-        dns.resolveCname(hostname, (err, record) => {
+        dns.resolveCname(hostname, (err, records) => {
             if (err) reject(err);
-            else resolve(record[0]);
+            else resolve(records[0]);
         });
     });
 }
@@ -22,7 +22,7 @@ module.exports = async (req, res, next) => {
         try {
             hostname = await getCname(hostname);
         } catch (e) {
-            next();
+            return next();
         }
     }
 
