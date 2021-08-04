@@ -16,6 +16,17 @@ CREATE TABLE Rules (
     protection CHAR(64) DEFAULT NULL
 );
 ```
+
+### dotenv
+This project uses `dotenv`. Please create a file called `.env` contaning fields for the database like so:
+```.env
+# Info for the primary database
+RW_DB='{"host": "localhost", "user": "root", "password": "admin", "database": "xtie"}'
+
+# Info for the read-replica database
+RO_DB='{"host": "localhost", "user": "root", "password": "admin", "database": "xtie"}'
+```
+
 ### Node
 1. Install Node.js, for Arch Linux it's as simple as `pacman -Syu nodejs`
 2. cd into repo, `npm install`
