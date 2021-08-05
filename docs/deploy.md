@@ -32,8 +32,8 @@ PORT=80
 # Hash salt
 SALT="asfkasndfadfn34jnq34ntu3in5i3"
 
-# Hostname
-Name for server that xtie is running on
+# Name for server that xtie is running on
+HOSTNAME="xtie.net"
 ```
 
 ### Node
