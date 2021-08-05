@@ -25,6 +25,15 @@ RW_DB='{"host": "localhost", "user": "root", "password": "admin", "database": "x
 
 # Info for the read-replica database
 RO_DB='{"host": "localhost", "user": "root", "password": "admin", "database": "xtie"}'
+
+# Port to listen on
+PORT=80
+
+# Hash salt
+SALT="asfkasndfadfn34jnq34ntu3in5i3"
+
+# Hostname
+Name for server that xtie is running on
 ```
 
 ### Node
