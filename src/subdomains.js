@@ -18,6 +18,8 @@ module.exports = async (req, res, next) => {
 
     // Handle CNAME
     let { hostname } = req;
+    if (!hostname)
+	return next();
     if (!hostname.includes(process.env.HOSTNAME)) {
         try {
             hostname = await getCname(hostname);
@@ -34,7 +36,7 @@ module.exports = async (req, res, next) => {
     // Check redirects
     const r = cache[subdomain];
     if (!r) {
-        res.redirect(404, process.env.HOSTNAME);
+        res.redirect(404, `http://${process.env.HOSTNAME}`);
         debug(`No rule for ${subdomain}`);
         return;
     }
