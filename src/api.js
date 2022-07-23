@@ -33,7 +33,7 @@ router.post("/update", async (req, res) => {
         return res.status(400).send("body missing subdomain field");
     if (!destination)
         return res.status(400).send("body missing destination field");
-    if (!protection)
+    if (iprotection === undefined)
         return res.status(400).send("body missing protection field");
 
     // Process body
@@ -84,6 +84,14 @@ router.post("/update", async (req, res) => {
     cache[subdomain] = { destination: dest, protection: prot };
     debug(`Add rule ${subdomain}: ${dest}`);
     res.status(200).send("success");
+});
+
+router.get('/test', async (req, res) => {
+	console.log('ip', req.ip);
+	console.log('ua', req.useragent);
+	const ua = require('express-useragent');
+	res.send(req.headers['user-agent']);
+	console.log(ua.parse(req.headers['user-agent']));
 });
 
 module.exports = router;

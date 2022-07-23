@@ -19,7 +19,22 @@ app.use("/", express.static("./static", { fallthrough: true }));
 
 // Start server
 const debug = require("debug")("xtie:server");
-const port = process.env.PORT || 80;
-if (require.main == module)
-    app.listen(port, () =>
-        debug("Server listening on port %d", port));
+
+// Import http server stuff
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
+
+// Start http server
+const httpPort = Number(process.env.PORT) || 8080;
+const httpServer = http.createServer(app);
+httpServer.listen(httpPort, () => debug(`http listening on port ${httpPort}.`));
+
+// Start https server
+if (process.env.SSL_KEY && process.env.SSL_CERT) {
+    const httpsServer = https.createServer({
+        key: fs.readFileSync(process.env.SSL_KEY),
+        cert: fs.readFileSync(process.env.SSL_CERT),
+    }, app);
+    httpsServer.listen(443, () => debug('https listening on 443'));
+}
