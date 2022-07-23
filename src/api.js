@@ -33,7 +33,7 @@ router.post("/update", async (req, res) => {
         return res.status(400).send("body missing subdomain field");
     if (!destination)
         return res.status(400).send("body missing destination field");
-    if (iprotection === undefined)
+    if (protection === undefined)
         return res.status(400).send("body missing protection field");
 
     // Process body
