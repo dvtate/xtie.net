@@ -15,7 +15,9 @@ async function getCname(hostname) {
 // Middleware to handle subdomain redirects
 const pivot = '.' + process.env.HOSTNAME;
 module.exports = async (req, res, next) => {
-
+    //const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+   // console.log('sub', req.hostname, ip)
+    
     // Handle CNAME
     let { hostname } = req;
     if (!hostname)
