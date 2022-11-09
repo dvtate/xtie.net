@@ -66,8 +66,8 @@
 							.sort((a, b) => Number(b.ts || 0) - Number(a.ts || 0))
 							.map(r => [
 								r.ts ? new Date(Number(r.ts)).toUTCString() : 'Before November 2022',
-								r.subdomain,
-								r.destination,
+								`<a href="http://${r.subdomain}.xtie.net">${r.subdomain}.xtie.net</a>`,
+								`<a href="${r.destination}">${r.destination}</a>`,
 							]),
 						'Recent Additions',
 					);
