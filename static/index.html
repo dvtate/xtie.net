@@ -57,17 +57,19 @@
 				return ret;
 			}
 
+			// TODO click on table column headers to sort by that
 			async function onLoad() {
 				const r = await fetch('/api/rules');
 				r.json().then(rules => {
 					document.getElementById('table').innerHTML = htmlTable(
-						['Date Added', 'Subdomain', 'Destination'],
+						['Date Added', 'Subdomain', 'Destination', 'Hits'],
 						rules
 							.sort((a, b) => Number(b.ts || 0) - Number(a.ts || 0))
 							.map(r => [
 								r.ts ? new Date(Number(r.ts)).toUTCString() : 'Before November 2022',
 								`<a href="http://${r.subdomain}.xtie.net">${r.subdomain}.xtie.net</a>`,
-								`<a href="${r.destination}">${r.destination}</a>`,
+								`<a href="http://${r.subdomain}.xtie.net">${r.destination}</a>`,
+								r.hits.toLocaleString(),
 							]),
 						'Recent Additions',
 					);

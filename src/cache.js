@@ -13,15 +13,16 @@ const cache = {
     // Example rule (note user can't change it here)
     www: {
         destination: `http://${process.env.HOSTNAME}`,
-        protection: "43tnjfwne4jt35gnjkkjt35twe",
+        protection: "lol what",
+	hits: 0,
     },
 };
 
 // Populate cache on server start
 setTimeout(async () => {
     const rules = await db.queryProm("SELECT * FROM Rules", [], true);
-    rules.forEach(({subdomain, destination, protection, ts }) => {
-        cache[subdomain] = { destination, protection, ts };
+    rules.forEach(({subdomain, destination, protection, ts, hits }) => {
+        cache[subdomain] = { destination, protection, ts, hits };
     });
     debug("populated cache with %d entries", rules.length);
 }, 100);

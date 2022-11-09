@@ -84,7 +84,7 @@ router.post("/update", async (req, res) => {
         [ subdomain, dest, prot, ts ],
         false,
     );
-    cache[subdomain] = { destination: dest, protection: prot, ts };
+    cache[subdomain] = { destination: dest, protection: prot, ts, hits: 0 };
     debug(`Add rule ${subdomain}: ${dest}`);
     // res.status(200).send("success");
     res.redirect('/');
@@ -97,7 +97,7 @@ router.post("/update", async (req, res) => {
 router.get('/rules', async (req, res) => {
     // Don't send protection
     const ret = Object.entries(cache)
-        .map(([subdomain, r]) => ({ subdomain, destination: r.destination, ts: r.ts }))
+        .map(([subdomain, r]) => ({ subdomain, destination: r.destination, ts: r.ts, hits: r.hits }))
     res.json(ret);
 });
 

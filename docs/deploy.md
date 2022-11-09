@@ -3,19 +3,7 @@
 ## Configure Server
 ### MySQL
 1. Install your preferred MySQl variant, I generally use MariaDB.
-2. Set up the database
-```sql
--- Make db
-CREATE DATABASE xtie;
-USE xtie;
-
--- Redirects
-CREATE TABLE Rules (
-    subdomain VARCHAR(50) UNIQUE NOT NULL PRIMARY KEY,
-    destination VARCHAR(128) NOT NULL,
-    protection CHAR(64) DEFAULT NULL
-);
-```
+2. Set up the database by pasting the contents of [db.sql](db.sql) into a sql prompt.
 
 ### dotenv
 This project uses `dotenv`. Please create a file called `.env` contaning fields for the database like so:

@@ -1,6 +1,7 @@
 const debug = require("debug")('xtie:subdomain');
 const { cache } = require('./cache');
 const dns = require("dns");
+const db = require("./db");
 
 // Look up cname dns record
 async function getCname(hostname) {
@@ -47,5 +48,8 @@ module.exports = async (req, res, next) => {
     const dest = r.destination + req.path;
     res.redirect(dest);
     debug(`Redirect ${subdomain}: ${dest}`);
+
+    db.queryProm('UPDATE Rules SET hits = hits + 1 WHERE subdomain = ?;', [subdomain], false);
+    cache[subdomain].hits++;
 };
 
