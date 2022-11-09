@@ -25,6 +25,7 @@ function sha256(...strings) {
  *  destination: where to redirect user to (or empty string to delete)
  *  protection: optional password to prevent changes
  * }
+ * @returns 400, 401,
  */
 router.post("/update", async (req, res) => {
     // Validate body
@@ -66,19 +67,21 @@ router.post("/update", async (req, res) => {
 
         // Update rule
         await db.queryProm("UPDATE Rules SET destination=? WHERE subdomain=?", [dest, subdomain], false);
-        res.status(200).send("success");
+        // res.status(200).send("success");
+        res.redirect('/');
 
         // Update cache
         const old = cache[subdomain].destination
         cache[subdomain].destination = dest;
-        debug(`Update rule ${subdomain}: ${old} => ${dest}`);
+        debug(`Updated rule ${subdomain}: ${old} => ${dest}`);
         return;
     }
 
     // Create new rule
+    const ts = Date.now();
     await db.queryProm(
-        "INSERT INTO Rules (subdomain, destination, protection) VALUES (?, ?, ?);",
-        [ subdomain, dest, prot ],
+        "INSERT INTO Rules (subdomain, destination, protection, ts) VALUES (?, ?, ?, ?);",
+        [ subdomain, dest, prot, ts ],
         false,
     );
     cache[subdomain] = { destination: dest, protection: prot };
@@ -86,12 +89,15 @@ router.post("/update", async (req, res) => {
     res.status(200).send("success");
 });
 
-router.get('/test', async (req, res) => {
-	console.log('ip', req.ip);
-	console.log('ua', req.useragent);
-	const ua = require('express-useragent');
-	res.send(req.headers['user-agent']);
-	console.log(ua.parse(req.headers['user-agent']));
+/**
+ * GET /api/rules
+ * Gives a list of user-submitted redirect rules
+ */
+router.get('/rules', async (req, res) => {
+    // Don't send protection
+    const ret = Object.entries(cache)
+        .map((subdomain, r) => ({ subdomain, destination: r.destination, ts: r.ts }))
+    res.json(ret);
 });
 
 module.exports = router;

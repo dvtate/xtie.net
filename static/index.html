@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd" xml:lang="en">
     <head>
-
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>xTie</title>
@@ -15,22 +14,62 @@
 			span#err {
 				color: red;
 			}
+			h1, h2 {
+				margin: 5px;
+			}
 		</style>
 	</head>
-	<body>
-		<h1>Subdomain Redirects</h1>
+	<body onload="onLoad()">
+		<h1 style="margin:0; display:inline">Subdomain Redirects</h1> <a href='https://github.com/dvtate/xtie#README' >See on GitHub</a>
 		<hr/>
+		<h2>Add a Redirect Rule</h2>
 		<form action="/api/update" method='POST'>
-			<span id="sub">http://<input type="text" name="subdomain" onchange="validate('sub')" />.xtie.net</span>
-			<br/>
-			Redirects to: <input type="text" name="destination" onchange="validate('dest')" />
-			<br/>
-			Key to prevent changes: <input type="password" name="protection" />
-
+			<p>Make <span id="sub">http://<input type="text" name="subdomain" onchange="validate('sub')" />.xtie.net</span></p>
+			<p>Redirect to: <input type="text" name="destination" onchange="validate('dest')" />.</p>
+			<p>Add a password to prevent changes: <input type="password" name="protection" /></p>
 			<button type="submit">Submit</button>
-			<span id='err'></span>
 		</form>
-		<hr/>
-		<a href='https://github.com/dvtate/xtie#README' >See on GitHub</a>
+		<div id="table"></div>
+		<script>
+			function genTable(headers, body, caption) {
+				let ret = "<table class=\"data-table\">";
+				if (caption)
+					ret += `\n<caption>${caption}</caption>`;
+
+				if (headers) {
+					ret += "<thead><tr>\n";
+					headers.forEach(h => ret += `<th>${h}</th>`);
+					ret += "\n</tr></thead>";
+				}
+
+				ret += "<tbody>";
+				body.forEach(row => {
+					ret += "<tr>\n";
+					for (let i = 0; i < row.length; i++)
+						ret += `<td data-label="${headers[i] || ""}">${row[i]}</td>`;
+					ret += "</tr>";
+				});
+				ret += "\n</tbody>\n</table>";
+
+				return ret;
+			}
+
+			async function onLoad() {
+				const r = await fetch('/api/rules');
+				r.json().then(rules => {
+					document.getElementById('table').innerHTML = genTable(
+						['Date Added', 'Subdomain', 'Destination'],
+						rules
+							.sort((a, b) => Number(a.ts) - Number(b.ts))
+							.map(r => [
+								new Date(Number(r.ts)),
+								r.subdomain,
+								r.destination,
+							]),
+						'Recent Additions',
+					);
+				});
+			}
+		</script>
 	</body>
 </html>

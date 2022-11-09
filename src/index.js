@@ -31,10 +31,10 @@ const httpServer = http.createServer(app);
 httpServer.listen(httpPort, () => debug(`http listening on port ${httpPort}.`));
 
 // Start https server
-if (process.env.SSL_KEY && process.env.SSL_CERT) {
-    const httpsServer = https.createServer({
-        key: fs.readFileSync(process.env.SSL_KEY),
-        cert: fs.readFileSync(process.env.SSL_CERT),
-    }, app);
-    httpsServer.listen(443, () => debug('https listening on 443'));
-}
+// if (process.env.SSL_KEY && process.env.SSL_CERT) {
+//     const httpsServer = https.createServer({
+//         key: fs.readFileSync(process.env.SSL_KEY),
+//         cert: fs.readFileSync(process.env.SSL_CERT),
+//     }, app);
+//     httpsServer.listen(443, () => debug('https listening on 443'));
+// }
