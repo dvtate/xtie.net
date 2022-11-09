@@ -9,10 +9,10 @@
 This project uses `dotenv`. Please create a file called `.env` contaning fields for the database like so:
 ```.env
 # Info for the primary database
-RW_DB='{"host": "localhost", "user": "root", "password": "admin", "database": "xtie"}'
+RW_DB='{"host": "localhost", "user": "root", "password": "hunter2", "database": "xtie"}'
 
 # Info for the read-replica database
-RO_DB='{"host": "localhost", "user": "root", "password": "admin", "database": "xtie"}'
+RO_DB='{"host": "localhost", "user": "root", "password": "hunter2", "database": "xtie"}'
 
 # Port to listen on
 PORT=80
