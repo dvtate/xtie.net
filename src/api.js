@@ -84,7 +84,7 @@ router.post("/update", async (req, res) => {
         [ subdomain, dest, prot, ts ],
         false,
     );
-    cache[subdomain] = { destination: dest, protection: prot };
+    cache[subdomain] = { destination: dest, protection: prot, ts };
     debug(`Add rule ${subdomain}: ${dest}`);
     // res.status(200).send("success");
     res.redirect('/');
