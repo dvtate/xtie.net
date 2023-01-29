@@ -5,6 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "DEBUG=xtie:* node src/index.js",
+    "log": "npm start | tee --append .xtie_log",
+    "deploy": "until npm run log; do echo \"exited with code $?. Restarting...\" > /dev/stderr; sleep 1; done",
     "test": "jest"
   },
   "author": "dvtate",

@@ -3,36 +3,46 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd" xml:lang="en">
     <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>xTie</title>
 		<link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v2.3.7/dist/mini-default.min.css" />
 		<style>
+			body {
+				min-width: 600px;
+			}
 			span#sub {
 				text-decoration: underline;
-			}
-			span#err {
-				color: red;
 			}
 			h1, h2 {
 				margin: 10px;
 			}
 			table {
+				margin: 0;
+
 				width: 100%;
+			}
+			td {
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
+			div.container {
+				margin: 0;
+				padding: 0 !important;
 			}
 		</style>
 	</head>
 	<body onload="onLoad()">
+		<div class="container">
 		<h1 style="display:inline">Subdomain Redirects</h1> <a href='https://github.com/dvtate/xtie#README' >See on GitHub</a>
 		<hr/>
 		<h2>Add a Redirect Rule</h2>
 		<form action="/api/update" method='POST'>
 			<p>Make <span id="sub">http://<input type="text" name="subdomain" onchange="validate('sub')" />.xtie.net</span></p>
-			<p>Redirect to: <input type="text" name="destination" onchange="validate('dest')" />.</p>
-			<p>Add a password to prevent changes: <input type="password" name="protection" /></p>
+			<p>redirect to <input type="text" name="destination" onchange="validate('dest')" />.</p>
+			<p>Password to prevent changes: <input type="password" name="protection" /></p>
 			<button type="submit">Submit</button>
 		</form>
-		<span id="table"></span>
+		<div class="row"><div class="col-lg-12 col-sm-12" id="table"></div></div></div>
 		<script>
 			function htmlTable(headers, body, caption) {
 				let ret = "<table class=\"data-table\">";

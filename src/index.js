@@ -8,6 +8,16 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', 1);
 
+const debug = require("debug")("xtie:server");
+const querystring = require('querystring');
+app.use((req, res, next) => {
+    //if (req.path === "/") return next();
+    const bodyString = JSON.stringify(req.body);
+    const qs = querystring.stringify(req.query);
+    debug(`${req.method} ${req.path}${qs ? '?' + qs : ''} body=${bodyString.length > 2 ? bodyString.length.toString() + " bytes" : "∅"} (${req.ip})`);
+    next();
+});
+
 // Subdomain routing middleware
 app.use(require('./subdomains'));
 
@@ -17,11 +27,8 @@ app.use("/api", require('./api'));
 // Static pages
 app.use("/", express.static("./static", { fallthrough: true }));
 
-// Start server
-const debug = require("debug")("xtie:server");
-
 // Import http server stuff
-const https = require('https');
+//const https = require('https');
 const http = require('http');
 const fs = require('fs');
 
