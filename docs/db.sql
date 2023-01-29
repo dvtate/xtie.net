@@ -6,7 +6,7 @@ USE xtie;
 -- Redirects
 CREATE TABLE Rules (
     subdomain VARCHAR(50) UNIQUE NOT NULL PRIMARY KEY,
-    destination VARCHAR(128) NOT NULL,
+    destination VARCHAR(2047) NOT NULL,
     protection CHAR(64) DEFAULT NULL,
     ts BIGINT UNSIGNED DEFAULT NULL,
     hits BIGINT UNSIGNED DEFAULT 0

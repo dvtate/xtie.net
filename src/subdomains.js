@@ -16,8 +16,7 @@ async function getCname(hostname) {
 // Middleware to handle subdomain redirects
 const pivot = '.' + process.env.HOSTNAME;
 module.exports = async (req, res, next) => {
-    //const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-   // console.log('sub', req.hostname, ip)
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.ip;
     
     // Handle CNAME
     let { hostname } = req;
@@ -33,23 +32,24 @@ module.exports = async (req, res, next) => {
 
     // Verify it's actually a subdomain
     const [subdomain, found] = hostname.split(pivot);
+    const sub = subdomain.toLowerCase();
     if (found === undefined)
         return next();
 
     // Check redirects
-    const r = cache[subdomain];
+    const r = cache[sub];
     if (!r) {
         res.redirect(404, `http://${process.env.HOSTNAME}`);
-        debug(`No rule for ${subdomain}`);
+        debug(`No rule for ${sub}`);
         return;
     }
 
     // Redirect them
     const dest = r.destination + req.path;
     res.redirect(dest);
-    debug(`Redirect ${subdomain}: ${dest}`);
+    debug(`Redirect ${sub}: ${dest} for ${ip}`);
 
-    db.queryProm('UPDATE Rules SET hits = hits + 1 WHERE subdomain = ?;', [subdomain], false);
-    cache[subdomain].hits++;
+    db.queryProm('UPDATE Rules SET hits = hits + 1 WHERE subdomain = ?;', [sub], false);
+    cache[sub].hits++;
 };
 

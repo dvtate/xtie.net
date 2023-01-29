@@ -36,44 +36,49 @@ router.post("/update", async (req, res) => {
         return res.status(400).send("body missing destination field");
     if (protection === undefined)
         return res.status(400).send("body missing protection field");
+    if (destination.length > 2000)
+        return res.status(400).send("Destination too long (max 2000 characters)");
+    if (subdomain.length > 50)
+	return res.status(400).send("Subdomain too long (max 50 characters)");
 
     // Process body
-    const prot = sha256(subdomain, protection);
+    const sub = subdomain.toLowerCase();
+    const prot = sha256(sub, protection);
     let dest = destination.startsWith('http') && destination.includes('://')
         ? destination : 'https://' + destination;
     if (dest.endsWith('/'))
 	dest = dest.slice(0, -1);
 
     // Check for pre-existing rule
-    const rule = cache[subdomain];
+    const rule = cache[sub];
 
     // Rule already exists
     if (rule) {
         // Invalid credentials
         if (prot !== rule.protection) {
             const hostname = process.env.HOSTNAME || 'xtie.net' || req.headers.host;
-            res.status(401).send(`Incorrect protection key. Unauthorized to change ${subdomain}.${hostname}.`);
+            res.status(401).send(`Incorrect protection key. Unauthorized to change ${sub}.${hostname}.`);
             debug('Wrong protection key (length: %d)', protection.length);
             return;
         }
 
         if (destination === '') {
-            await db.queryProm("DELETE FROM Rules WHERE subdomain=?", [subdomain], false);
-            const { destination } = cache[subdomain];
-            delete cache[subdomain];
-            debug(`Remove rule ${subdomain}: was ${destination}`);
+            await db.queryProm("DELETE FROM Rules WHERE subdomain=?", [sub], false);
+            const { destination } = cache[sub];
+            delete cache[sub];
+            debug(`Remove rule ${sub}: was ${destination}`);
             return;
         }
 
         // Update rule
-        await db.queryProm("UPDATE Rules SET destination=? WHERE subdomain=?", [dest, subdomain], false);
+        await db.queryProm("UPDATE Rules SET destination=? WHERE subdomain=?", [dest, sub], false);
         // res.status(200).send("success");
         res.redirect('/');
 
         // Update cache
-        const old = cache[subdomain].destination
-        cache[subdomain].destination = dest;
-        debug(`Updated rule ${subdomain}: ${old} => ${dest}`);
+        const old = cache[sub].destination
+        cache[sub].destination = dest;
+        debug(`Updated rule ${sub}: ${old} => ${dest}`);
         return;
     }
 
@@ -81,11 +86,11 @@ router.post("/update", async (req, res) => {
     const ts = Date.now();
     await db.queryProm(
         "INSERT INTO Rules (subdomain, destination, protection, ts) VALUES (?, ?, ?, ?);",
-        [ subdomain, dest, prot, ts ],
+        [ sub, dest, prot, ts ],
         false,
     );
-    cache[subdomain] = { destination: dest, protection: prot, ts, hits: 0 };
-    debug(`Add rule ${subdomain}: ${dest}`);
+    cache[sub] = { destination: dest, protection: prot, ts, hits: 0 };
+    debug(`Add rule ${sub}: ${dest}`);
     // res.status(200).send("success");
     res.redirect('/');
 });
