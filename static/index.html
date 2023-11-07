@@ -79,7 +79,7 @@
 							.map(r => [
 								r.ts ? new Date(Number(r.ts)).toUTCString() : 'Before November 2022',
 								`<a href="http://${r.subdomain}.xtie.net">${r.subdomain}.xtie.net</a>`,
-								`<a href="http://${r.subdomain}.xtie.net">${r.destination}</a>`,
+								`<a href="${r.destination}">${r.destination}</a>`,
 								r.hits.toLocaleString(),
 							]),
 						'Recent Additions',
