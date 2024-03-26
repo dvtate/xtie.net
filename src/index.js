@@ -1,6 +1,5 @@
 // Load configs
 require("dotenv").config();
-require("./db").begin();
 
 // Express server
 const express = require("express");

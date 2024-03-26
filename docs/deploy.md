@@ -1,19 +1,12 @@
 # Deployment guide
-
 ## Configure Server
-### MySQL
-1. Install your preferred MySQl variant, I generally use MariaDB.
-2. Set up the database by pasting the contents of [db.sql](db.sql) into a sql prompt.
+### Database
+Make sure the xtie_rules.json store is valid JSON.
+`xtie $ echo '{}' > xtie_rules.json`
 
 ### dotenv
 This project uses `dotenv`. Please create a file called `.env` contaning fields for the database like so:
 ```.env
-# Info for the primary database
-RW_DB='{"host": "localhost", "user": "root", "password": "hunter2", "database": "xtie"}'
-
-# Info for the read-replica database
-RO_DB='{"host": "localhost", "user": "root", "password": "hunter2", "database": "xtie"}'
-
 # Port to listen on
 PORT=80
 

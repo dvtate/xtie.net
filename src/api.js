@@ -1,7 +1,6 @@
 const crypto = require("crypto");
 const debug = require("debug")("xtie:api");
-const db = require("./db");
-const { cache } = require("./cache");
+const { cache, setRules } = require("./cache");
 const router = require("express").Router();
 
 /**
@@ -63,9 +62,9 @@ router.post("/update", async (req, res) => {
         }
 
         if (destination === '') {
-            await db.queryProm("DELETE FROM Rules WHERE subdomain=?", [sub], false);
             const { destination } = cache[sub];
             delete cache[sub];
+            setRules();
             debug(`Remove rule ${sub}: was ${destination}`);
             return;
         }
@@ -84,12 +83,8 @@ router.post("/update", async (req, res) => {
 
     // Create new rule
     const ts = Date.now();
-    await db.queryProm(
-        "INSERT INTO Rules (subdomain, destination, protection, ts) VALUES (?, ?, ?, ?);",
-        [ sub, dest, prot, ts ],
-        false,
-    );
     cache[sub] = { destination: dest, protection: prot, ts, hits: 0 };
+    setRules();
     debug(`Add rule ${sub}: ${dest}`);
     // res.status(200).send("success");
     res.redirect('/');

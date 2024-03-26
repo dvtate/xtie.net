@@ -1,12 +1,5 @@
 const debug = require("debug")("xtie:cache");
-const db = require("./db");
-db.begin();
-
-/**
- * Note that we only using the database for persistence
- *
- * Most of the time we'll use the cache as it's faster
- */
+const fs = require('fs');
 
 // Cache so that we can avoid database
 const cache = {
@@ -14,18 +7,25 @@ const cache = {
     www: {
         destination: `http://${process.env.HOSTNAME}`,
         protection: "lol what",
-	hits: 0,
+        hits: 0,
     },
 };
 
-// Populate cache on server start
-setTimeout(async () => {
-    const rules = await db.queryProm("SELECT * FROM Rules", [], true);
-    rules.forEach(({subdomain, destination, protection, ts, hits }) => {
-        cache[subdomain] = { destination, protection, ts, hits };
-    });
-    debug("populated cache with %d entries", rules.length);
-}, 100);
+// No mutex needed as these are sync operations
+function getRules() {
+    Object.assign(cache, JSON.parse(fs.readFileSync("./xtie_rules.json").toString()));
+}
+function setRules() {
+    fs.writeFileSync("./xtie_rules.json", JSON.stringify(cache));
+}
 
-// Export cache
-module.exports.cache = cache;
+// Populate cache on server start
+getRules();
+debug("populated cache with %d entries", Object.keys(cache).length);
+
+// Export
+module.exports = {
+    cache,
+    getRules,
+    setRules,
+};
