@@ -13,6 +13,8 @@ const cache = {
 
 // No mutex needed as these are sync operations
 function getRules() {
+    if (!fs.existsSync('./xtie_rules.json'))
+	fs.writeFileSync('./xtie_rules.json', '{}');
     Object.assign(cache, JSON.parse(fs.readFileSync("./xtie_rules.json").toString()));
 }
 function setRules() {
