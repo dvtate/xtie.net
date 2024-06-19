@@ -70,13 +70,13 @@ router.post("/update", async (req, res) => {
         }
 
         // Update rule
-        await db.queryProm("UPDATE Rules SET destination=? WHERE subdomain=?", [dest, sub], false);
+        //await db.queryProm("UPDATE Rules SET destination=? WHERE subdomain=?", [dest, sub], false);
         // res.status(200).send("success");
-        res.redirect('/');
 
         // Update cache
         const old = cache[sub].destination
         cache[sub].destination = dest;
+        res.redirect('/');
         debug(`Updated rule ${sub}: ${old} => ${dest}`);
         return;
     }

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "DEBUG=xtie:* node src/index.js",
     "log": "npm start | tee --append .xtie_log",
-    "deploy": "until npm run log; do echo \"exited with code $?. Restarting...\" > /dev/stderr; sleep 1; done"
+    "deploy": "until npm run log; do echo \"exited with code $?. Restarting...\" > /dev/stderr; sleep 1; done",
+    "delete-rules": "node delete_rules.js"
   },
   "author": "dvtate",
   "license": "GPL-3.0-or-later",
