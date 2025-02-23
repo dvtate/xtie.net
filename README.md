@@ -2,6 +2,7 @@
 xTie is a simple service that works somewhat like a url shortener except it uses subdomains instead of directories so that you can create CNAME rules among other things with it.
 
 ## Using the app
+- Navigate to [xtie.net](http://xtie.net)
 - Choose subdomain
 - Choose url to redirect to (or leave it blank to remove rule)
 - (optional) Choose a key to prevent other users from changing the rule
